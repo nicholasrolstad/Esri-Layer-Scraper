@@ -1,5 +1,7 @@
 import urllib2
 
+#This tool will attempt to download a series of geojson files from a layers REST endpoint
+
 # parameters
 name = ''                       # name of county, etc. for file name
 main_url = ''                   # REST endpoint for layer, will look like 'http://gis.co.ym.mn.gov/arcgis/rest/services/YellowMedicine/YellowMedicine_DataLayers/MapServer/40'
