@@ -1,13 +1,15 @@
-import urllib2
+import requests
 
 #This tool will attempt to download a series of geojson files from a layers REST endpoint
 
 # parameters
 name = ''                       # name of county, etc. for file name
 main_url = ''                   # REST endpoint for layer, will look like 'http://gis.co.ym.mn.gov/arcgis/rest/services/YellowMedicine/YellowMedicine_DataLayers/MapServer/40'
-min_value = 0                   # integer, lowest value of objectid
-max_value = 999                 # integer, highest value of objectid (or rounded up to nearest 1000-1 e.g. round 6758 to 6999 NOT 7000)
+min_value =  1                  # integer, lowest value of objectid
+max_value =  999                # integer, highest value of objectid (or rounded up to nearest 1000-1 e.g. round 6758 to 6999 NOT 7000)
 object_id_name = 'OBJECTID'     # may be something like 'OBJECTID_1'
+
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)     Chrome/37.0.2049.0 Safari/537.36'}
 
 
 # function that builds list of intervals to comply with 1000 feature limit per call
@@ -32,8 +34,8 @@ count = 1
 for clause in where_clauses:
     url='{}/query?where={}%20>=%20{}%20AND%20{}%20<={}%20&outFields=*&f=json'.format(main_url, object_id_name, clause[0], object_id_name, clause[1])
     print url
-    page = urllib2.urlopen(url)
-    content = page.read()
+    r = requests.get(url, headers=headers)
+    content = r.text.encode('utf-8')
     with open('{}_parcels{}.json'.format(name, count), 'w') as file:
         file.write(content)
     count += 1
