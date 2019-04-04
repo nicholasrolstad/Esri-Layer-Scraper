@@ -1,27 +1,46 @@
 import arcpy
-from arcpy import env
 import os
 import glob
 
-dirOfJSON               = 'C:\\USSolar\\Data\\State\\CO\\ParcelScrape' #path to folder where .json files are stored
-outputDirectory         = 'C:\\USSolar\\Data\\State\\CO\\Montrose_shp' #path to where the shapefiles will be stored
 
-out_parcels             = "Parcel/Montrose" #name of county after forward slash
-phi                     = "_DeleteTemp"
+# general parameters
+input_directory = '' # path to folder where .json files are stored
+output_directory = '' # path to where the converted shapefiles will be stored.
+gdb = False # True = Feature Class output, False = Shapefile output
+
+# Feature Class Output Parameters
+gdb_path = '' #path to .gdb
+feature_dataset = '' #name of feature dataset (i.e. Parcel)
+feature_class = '' # name of feature dataset output (probably the county name or something like 'ParcelsHennepin')
+phi = "_DeleteTemp"
+
+# Shapefile Output Parameters
+shp_output_path = '' # path to the merged shapefile output
+shapefile_name = '' # (probably the county name or something like 'ParcelsHennepin')
 
 
-arcpy.env.workspace = dirOfJSON
 
-for f in arcpy.ListFiles('*.json'):
-    j = os.path.join(dirOfJSON, f)
-    outputShp = os.path.join(outputDirectory, os.path.splitext(f)[0] + '.shp')
-    print outputShp
-    print("Processing : {}".format(outputShp))
-    arcpy.JSONToFeatures_conversion(j, outputShp)
-
-env.workspace           = "C:\USS\United States Solar Corporation\Site Selection - Documents\Data\State\CO\Colorado20190401.gdb" #path to .gdb
-env.overwriteOutput     = True
-
-shp = glob.glob("{}\*.shp".format(outputDirectory))
-#fcs = arcpy.ListFeatureClasses()
-arcpy.Merge_management(shp, out_parcels)
+if gdb:
+    arcpy.env.workspace = gdb_path
+    
+    for f in arcpy.ListFiles('*.json'):
+        j = os.path.join(input_directory, f)
+        output_shp = os.path.join(output_directory, os.path.splitext(f)[0] + '.shp')
+        print("Processing : {}".format(output_shp))
+        arcpy.JSONToFeatures_conversion(j, output_shp)
+    
+    shp = glob.glob("{}\*.shp".format(output_directory))
+    output = '{}/{}'.format(feature_dataset, feature_class)
+    arcpy.Merge_management(shp, output)
+else:
+    arcpy.env.workspace = shp_output_path
+    
+    for f in arcpy.ListFiles('*.json'):
+        j = os.path.join(input_directory, f)
+        outputShp = os.path.join(output_directory, os.path.splitext(f)[0] + '.shp')
+        print("Processing : {}".format(outputShp))
+        arcpy.JSONToFeatures_conversion(j, outputShp)
+    
+    shp = glob.glob("{}\*.shp".format(output_directory))
+    output = '{}/{}'.format(shp_output_path, shapefile_name)
+    arcpy.Merge_management(shp, output)
