@@ -18,10 +18,8 @@ phi = "_DeleteTemp"
 shp_output_path = '' # path to the merged shapefile output
 shapefile_name = '' # (probably the county name or something like 'ParcelsHennepin')
 
-
-
 if gdb:
-    arcpy.env.workspace = gdb_path
+    arcpy.env.workspace = input_directory
     
     for f in arcpy.ListFiles('*.json'):
         j = os.path.join(input_directory, f)
@@ -29,11 +27,12 @@ if gdb:
         print("Processing : {}".format(output_shp))
         arcpy.JSONToFeatures_conversion(j, output_shp)
     
+    arcpy.env.workspace = gdb_path
     shp = glob.glob("{}\*.shp".format(output_directory))
     output = '{}/{}'.format(feature_dataset, feature_class)
     arcpy.Merge_management(shp, output)
 else:
-    arcpy.env.workspace = shp_output_path
+    arcpy.env.workspace = input_directory
     
     for f in arcpy.ListFiles('*.json'):
         j = os.path.join(input_directory, f)
@@ -41,6 +40,8 @@ else:
         print("Processing : {}".format(outputShp))
         arcpy.JSONToFeatures_conversion(j, outputShp)
     
+    
+    arcpy.env.workspace = shp_output_path
     shp = glob.glob("{}\*.shp".format(output_directory))
     output = '{}/{}'.format(shp_output_path, shapefile_name)
     arcpy.Merge_management(shp, output)
