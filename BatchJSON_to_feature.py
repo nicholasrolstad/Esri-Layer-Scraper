@@ -2,21 +2,21 @@ import arcpy
 import os
 import glob
 
-
+name = 'Peoria'
 # general parameters
-input_directory = '' # path to folder where .json files are stored
-output_directory = '' # path to where the converted shapefiles will be stored.
+input_directory = r'C:\Users\NicholasRolstad\Desktop\{}'.format(name) # path to folder where .json files are stored
+output_directory = r'C:\Users\NicholasRolstad\Desktop\{}'.format(name) # path to where the converted shapefiles will be stored.
 gdb = False # True = Feature Class output, False = Shapefile output
 
 # Feature Class Output Parameters
-gdb_path = '' #path to .gdb
+gdb_path = r'C:\Users\NicholasRolstad\Desktop\GDB\COParcel.gdb' #path to .gdb
 feature_dataset = '' #name of feature dataset (i.e. Parcel)
 feature_class = '' # name of feature dataset output (probably the county name or something like 'ParcelsHennepin')
 phi = "_DeleteTemp"
 
 # Shapefile Output Parameters
-shp_output_path = '' # path to the merged shapefile output
-shapefile_name = '' # (probably the county name or something like 'ParcelsHennepin')
+shp_output_path = r'C:\Users\NicholasRolstad\Desktop\{}'.format(name) # path to the merged shapefile output
+shapefile_name = 'Parcels{}'.format(name) # (probably the county name or something like 'ParcelsHennepin')
 
 if gdb:
     arcpy.env.workspace = input_directory

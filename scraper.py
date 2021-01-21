@@ -3,12 +3,12 @@ import requests
 #This tool will attempt to download a series of geojson files from a layers REST endpoint
 
 # parameters
-name = ''                       # name of county, etc. for file name
-main_url = ''                   # REST endpoint for layer, will look like 'http://gis.co.ym.mn.gov/arcgis/rest/services/YellowMedicine/YellowMedicine_DataLayers/MapServer/40'
+name = 'Peoria'                       # name of county, etc. for file name
+main_url = r'https://gis.peoriacounty.org/arcgis/rest/services/DP/LandRecords/MapServer/27'                   # REST endpoint for layer, will look like 'http://gis.co.ym.mn.gov/arcgis/rest/services/YellowMedicine/YellowMedicine_DataLayers/MapServer/40'
 min_value =  0                  # integer, lowest value of objectid
-max_value =  999                # integer, highest value of objectid (or rounded up to nearest 1000-1 e.g. round 6758 to 6999 NOT 7000)
+max_value =  89999                # integer, highest value of objectid (or rounded up to nearest 1000-1 e.g. round 6758 to 6999 NOT 7000)
 object_id_name = 'OBJECTID'     # may be something like 'OBJECTID_1'
-directory = ''                  # output directory
+directory = r'C:\Users\NicholasRolstad\Desktop\{}'.format(name)                  # output directory
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)     Chrome/37.0.2049.0 Safari/537.36'}
 
@@ -34,9 +34,9 @@ where_clauses = build_list(min_value, max_value)
 count = 1
 for clause in where_clauses:
     url='{}/query?where={}%20>=%20{}%20AND%20{}%20<={}%20&outFields=*&f=json'.format(main_url, object_id_name, clause[0], object_id_name, clause[1])
-    print url
+    print (url)
     r = requests.get(url, headers=headers)
     content = r.text.encode('utf-8')
-    with open('{}/{}_parcels{}.json'.format(directory, name, count), 'w') as file:
+    with open('{}/{}_parcels{}.json'.format(directory, name, count), 'wb') as file:
         file.write(content)
     count += 1
